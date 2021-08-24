@@ -1,0 +1,290 @@
+
+#### The link for the website is here: https://joeisenman.shinyapps.io/shinyApp/
+
+
+
+#rsconnect::showLogs()
+
+library(shiny)
+library(shinythemes)
+library(ggplot2)
+
+#getwd()
+#setwd("C:/Users/18027/Desktop/Projects")
+
+rotten <- read.csv('path/movieRatings.csv')
+colnames(rotten) <- c("film","genre","critic_rating","audience_rating","budge_millions","year")
+
+ui <- fluidPage(theme = shinytheme("cerulean"),
+                navbarPage(
+                  "Jordan's World of Data",
+                  tabPanel(icon("home"),
+                           sidebarPanel(
+                             imageOutput("ball")  ### Rstudio ball
+                             
+                           ), # sidebarPanel
+                           mainPanel(
+                             h1("Jordan's World of Data",align = "center"),
+                             br(),
+                             h4("Welcome! I'm Jordan, and welcome to the Jordan's World of Data.
+                                My intention with this application is to serve as an
+                                extended resume and portfolio for my data science journery."),
+                             br(),
+                             h4("In the tabs, I have included a mini exploratory analysis, 
+                                information about my work experience, and even a little 
+                                about my passions. In the future, I hope to 
+                                showcase some personal projects, as I accrue 
+                                more experience."),
+                             br(),
+                             h4("Enjoy scrolling through!"),
+                             imageOutput("sunrise1"),
+                             br()
+                             
+                             
+                           ) # mainPanel
+                           
+                  ), # Navbar 1, tabPanel
+                  
+                  tabPanel("Exploratory Data", ### Exploratory data tab.
+                           h1("Exploring Rotten Tomato Reviews"),
+                           h4("In this part of the app, I analyze Rotten 
+                           tomato reviews. I hope give a sample of my work, so   
+                           I will try to keep the analysis relatively 
+                              short."),
+                           br(),
+                           h4("It is Friday night, and you want to watch 
+                           something -- maybe a show on Netflix, maybe a movie 
+                           in the theatres. When presented with the different 
+                           options, many of us face choice paralysis. We have 
+                           finite time here on Earth, so we can not waste it 
+                           watching movies such as Sharknado. We want something 
+                           good!"),
+                           h4("To ease their movie-picking existential hardships, 
+                           many people turn to expert reviews to inform their decisions. 
+                           but is that a good practice? Can experts help us  
+                              pick 'good' movies?"),
+                           br(),
+                           h4("To answer these questions, let us turn to the 
+                           numbers. Below, I have made two histograms. 
+                           The first visaulization shows the distribution 
+                           of movie ratings among critics (1-100). The second 
+                           shows the distribution of movie ratings 
+                              among the general audience."),
+                           imageOutput("line"),
+                           h4('As you can see, this histogram shows a relatively 
+                           even distribution. That is, critics are very likely 
+                              to have extreme opinnions about certain movies.'),
+                           plotOutput("histo"),
+                           
+                           h4("In contrast to the critics, the general audience's 
+                           ratings are less extreme. Lay people are less likely 
+                              to call a movie a smash hit or terrible failure."),
+                           h4("This raises the question: why do critics rate movies 
+                           differently than lay people? I offer this answer: 
+                           movie critics are not paid to be accurate. They are 
+                           paid to attract attention, and nothing attracts more 
+                           attention than flashy headlines. In contrast, lay people 
+                           do not have the same financial incentives to offer 'hot takes.' 
+                           Additionally, it could be the case that regular viewers 
+                           are more passive. They enjoy the process of watching movies 
+                           but are not attentive to each little detail. In contrast, 
+                           professional critics may be more attuned to the little 
+                           details and thus react more strongly to minor features of 
+                              the movie."),
+                           br(),
+                           h4("To answer the original question, it may be the case that 
+                           critics react more strongly to minor details; however, 
+                           the critical review should not take away from the audience's 
+                           experience. People can still enjoy movies, despite the critical 
+                              review. That said, you may find critics who share your taste in movies.
+                              In that case, it may be good to listen to their advice."),
+                           br(),
+                           h4("Despite their flaws, critics seem to have one virtue. Generally 
+                           speaking, critics are not as swayed by big budgets and fancy 
+                           marketing."),
+                           h4("Below, I have two scatter plots. On the x-axis, we have a movies 
+                           budget in millions. On the y-axis, we have the reviews. Here are 
+                              the graphics:"),
+                           plotOutput("graph4"),
+                           
+                           plotOutput("graph5"),
+                           h4("Let us break this down. For lay people, there was a 
+                           relatively strong correlation between the budget and and 
+                           the rating. For critics, there was a very weak correlation 
+                              between the two. What could this mean?"),
+                           h4("I interpret the results as follows: armed with more money, 
+                           producers can advertise more, add more special effects, 
+                           and bring on famous actors. And audiences like these maneuvers. 
+                           In contrast, critics may not care about these features. 
+                              Rather, critics tend to care more about the story."),
+                           h4("Recommendation: if you prefer good story telling, 
+                           you may want to consult the experts -- read the critical 
+                           review. However, if your care more about enjoying a movie 
+                           with your friends, listen to your gut. Be honest with 
+                              yourself. What do you want to watch?")
+                           
+                  ),
+                  
+                  tabPanel("Work Experience", ### Work experience tab
+                           h1("Resume and Work Experience"),
+                           imageOutput('resume'),
+                           h4("In the future, I will update this page and document 
+                              my projects.")
+                  )
+                  
+                ) # navbarPage
+) # fluidPage
+
+
+
+server <- function(input, output) {
+  
+  output$ball <- renderImage({
+    # A temp file to save the output.
+    # This file will be removed later by renderImage
+    outfile <- tempfile(fileext = '.png')
+    # Generate the PNG
+    png(outfile, width = 374, height = 210)
+    dev.off()
+    
+    # Return a list containing the filename
+    list(src = 'www/ball.png',
+         contentType = 'image/png',
+         width = 150,
+         height = 150,
+         align = 'center',
+         alt = "This is alternate text")
+  }, deleteFile = FALSE)
+  
+  
+  output$myImage <- renderImage({
+    # A temp file to save the output.
+    # This file will be removed later by renderImage
+    outfile <- tempfile(fileext = '.png')
+    
+    # Generate the PNG
+    png(outfile, width = 374, height = 210)
+    dev.off()
+    
+    # Return a list containing the filename
+    list(src = 'www/skiing_2.png',
+         contentType = 'image/png',
+         width = 400,
+         height = 300,
+         align = 'center',
+         alt = "This is alternate text")
+  }, deleteFile = FALSE)
+  
+  output$hiking <- renderImage({
+    # A temp file to save the output.
+    # This file will be removed later by renderImage
+    outfile <- tempfile(fileext = '.png')
+    
+    # Generate the PNG
+    png(outfile, width = 374, height = 210)
+    dev.off()
+    
+    # Return a list containing the filename
+    list(src = 'www/sunrise_madison.png',
+         contentType = 'image/png',
+         width = 400,
+         height = 300,
+         align = 'center',
+         alt = "This is alternate text")
+  }, deleteFile = FALSE)
+  
+  output$resume <- renderImage({
+    # A temp file to save the output.
+    # This file will be removed later by renderImage
+    outfile <- tempfile(fileext = '.png')
+    
+    # Generate the PNG
+    png(outfile, width = 374, height = 210)
+    dev.off()
+    
+    # Return a list containing the filename
+    list(src = 'www/resume.png',
+         contentType = 'image/png',
+         width = 296,
+         height = 388,
+         center = 'center',
+         alt = "This is alternate text")
+  }, deleteFile = FALSE) 
+  
+  
+  output$sunrise1 <- renderImage({
+    # A temp file to save the output.
+    # This file will be removed later by renderImage
+    outfile <- tempfile(fileext = '.png')
+    
+    # Generate the PNG
+    png(outfile, width = 374, height = 210)
+    dev.off()
+    
+    # Return a list containing the filename
+    list(src = 'www/sunrise1.png',
+         contentType = 'image/png',
+         width = 554,
+         height = 417,
+         center = 'center',
+         alt = "This is alternate text")
+  }, deleteFile = FALSE)   
+  
+  output$txtout <- renderText({
+    paste(input$txt1, input$txt2, sep = " " )
+    
+  })
+  
+  
+  output$line <- renderPlot({
+    
+    graph1 <- ggplot(data = rotten, aes(x = `critic_rating`)) + 
+      geom_histogram(binwidth = 5, color = "grey30", fill = "steelblue", alpha = .75) + 
+      labs(y= "Frequency", x = "Critic Rating") +
+      geom_density(alpha = .2, fill = "antiquewhite3")
+    graph1
+    
+  }, height = 400, width = 600)
+  
+  
+  output$histo <- renderPlot({
+    graph2 <- ggplot(data = rotten, aes(x = `audience_rating`)) + 
+      geom_histogram(binwidth = 5, color = "grey30", fill = "steelblue", alpha = .75) + 
+      labs(y= "Frequency", x = "Audience Rating") +
+      geom_density(alpha = .2, fill = "antiquewhite3")
+    graph2
+    
+  }, height = 400, width = 600)
+  
+  
+  output$graph4 <- renderPlot({
+    graph4 <- ggplot(data = rotten, aes(x = `budge_millions`, y = `audience_rating`)) +
+      geom_point(size=2, color = 'steelblue',alpha = .4) + 
+      geom_smooth(method=lm, linetype="dashed", se=FALSE, color = 'red') + 
+      labs(y= "ratiing", x = "Budget (Millions $)") + 
+      ggtitle("Audience Rating and Budget") +
+      theme(plot.title = element_text(hjust = 0.5))
+    graph4
+    
+  }, height = 400, width = 600)
+  
+  output$graph5 <- renderPlot({
+    graph5 <- ggplot(data = rotten, aes(x = `budge_millions`, y = `critic_rating`)) +
+      geom_point(size=2, color = 'steelblue',alpha = .4) + 
+      labs(y= "ratiing", x = "Budget (Millions $)") + 
+      ggtitle("Critic Rating and Budget") +
+      theme(plot.title = element_text(hjust = 0.5)) + 
+      geom_smooth(method=lm, linetype="dashed", se=FALSE, color = 'red')
+    graph5
+    
+  }, height = 400, width = 600)
+  
+  
+  
+} # server
+
+
+
+# Create Shiny object
+shinyApp(ui = ui, server = server)
+
